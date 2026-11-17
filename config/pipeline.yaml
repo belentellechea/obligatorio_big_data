@@ -1,0 +1,55 @@
+# Configuración del pipeline del Data Lake - Cadena de cines (Opción 2)
+# Todas las rutas y supuestos de negocio viven acá: el código no tiene valores "mágicos".
+
+datalake:
+  # Local:  ./datalake      |  Cluster Docker: hdfs://namenode:9000/datalake
+  base_path: ./datalake
+  zones: [landing, raw, curated, gold, metadata]
+
+source:
+  name: imdb
+  # Carpeta con los TSV de IMDb (pueden estar comprimidos .gz). Local o hdfs://
+  path: ./data/imdb
+  license: "IMDb Non-Commercial Datasets - uso personal/académico"
+  datasets:
+    title_basics:
+      file: title.basics.tsv
+      primary_key: [tconst]
+      owner: Ingeniero/a de Datos
+      description: Atributos básicos de cada título de IMDb (tipo, título, año, duración, géneros)
+    title_ratings:
+      file: title.ratings.tsv
+      primary_key: [tconst]
+      owner: Ingeniero/a de Datos
+      description: Rating promedio ponderado y cantidad de votos por título
+    name_basics:
+      file: name.basics.tsv
+      primary_key: [nconst]
+      owner: Ingeniero/a de Datos
+      description: Personas (actores, directores, etc.), profesiones y títulos por los que son conocidas
+
+quality:
+  min_year: 1874          # primer film registrado
+  max_future_years: 5     # se aceptan anuncios hasta 5 años en el futuro
+  max_runtime_minutes: 600
+  # Si una regla crítica falla por encima de este porcentaje, el pipeline se detiene
+  critical_failure_threshold_pct: 5.0
+
+business:
+  # Ventana de análisis "mercado actual"
+  analysis_window_years: 15
+  # Mínimo de votos para considerar una película en los indicadores (evita sesgo de muestras chicas)
+  min_votes: 1000
+  # Percentil de votos que define un "taquillazo" (hit) junto con el rating mínimo
+  hit_votes_percentile: 0.75
+  hit_min_rating: 7.0
+  # Mínimo de películas para reportar un género o una persona
+  min_movies_per_genre: 30
+  min_movies_per_person: 3
+  # Supuestos de operación de una sala (para KPI de capacidad)
+  screen_operating_minutes: 840   # 14 h de operación: 10:00 a 24:00
+  turnover_minutes: 30            # publicidad + trailers + limpieza entre funciones
+  # Cortes de cartelera
+  new_release_years: 2            # "estrenos" = últimos 2 años del dataset
+  classic_min_age_years: 20       # "clásicos" para ciclos y reestrenos
+  shortlist_size: 25

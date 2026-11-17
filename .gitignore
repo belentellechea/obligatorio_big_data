@@ -1,0 +1,9 @@
+datalake/
+datalake_sample/
+data/
+reports_sample/
+datalake.zip
+__pycache__/
+*.pyc
+spark-warehouse/
+metastore_db/
