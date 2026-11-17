@@ -1,7 +1,20 @@
-data/
-reports_sample/
-datalake.zip
+# Entorno virtual y cachés de Python
+.venv/
 __pycache__/
 *.pyc
+.pytest_cache/
+
+# Datos y lago (pesados, se regeneran con el pipeline)
+data/
+datalake/
+datalake_sample/
+reports_sample/
+datalake.zip
+
+# Spark / Hive locales
 spark-warehouse/
 metastore_db/
+derby.log
+
+# macOS
+.DS_Store
